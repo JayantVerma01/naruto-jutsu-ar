@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naruto Jutsu AR — Rasengan & Chidori</title>
+    <meta name="description"
+        content="Real-time AR Naruto jutsu effects using hand tracking. Rasengan on right hand, Chidori on left hand.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="seal-container">
+                <div class="seal-ring ring-outer"></div>
+                <div class="seal-ring ring-middle"></div>
+                <div class="seal-ring ring-inner"></div>
+                <div class="seal-kanji">忍</div>
+            </div>
+            <h1 class="loader-title">NARUTO JUTSU AR</h1>
+            <p class="loader-subtitle">Initializing Hand Tracking...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="loader-hint" id="loader-hint">Loading MediaPipe...</p>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" style="display:none;">
+        <div class="start-content">
+            <div class="start-seal">忍</div>
+            <h1 class="start-title">NARUTO JUTSU AR</h1>
+            <p class="start-desc">Use your hands to unleash jutsu powers</p>
+            <div class="jutsu-info">
+                <div class="jutsu-card rasengan-card">
+                    <div class="jutsu-icon rasengan-icon">螺</div>
+                    <h3>RASENGAN</h3>
+                    <p>Right Hand — Open Palm</p>
+                    <p class="evolve-hint">Evolves → Rasenshuriken</p>
+                    <div class="jutsu-preview rasengan-preview"></div>
+                </div>
+                <div class="jutsu-card chidori-card">
+                    <div class="jutsu-icon chidori-icon">雷</div>
+                    <h3>CHIDORI</h3>
+                    <p>Left Hand — Open Palm</p>
+                    <div class="jutsu-preview chidori-preview"></div>
+                </div>
+            </div>
+            <button id="start-btn" class="start-btn">
+                <span class="btn-text">ACTIVATE JUTSU</span>
+                <span class="btn-glow"></span>
+            </button>
+            <p class="start-note">Fist = charge • Open palm = power up • Thrust open palm to throw</p>
+            <div class="start-footer">
+                Made with ⚡ by <a href="https://github.com/JayantVerma01" target="_blank" rel="noopener noreferrer">Jayant Verma</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main AR View -->
+    <div id="ar-view" style="display:none;">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="overlay"></canvas>
+        <canvas id="effects"></canvas>
+
+        <!-- HUD Elements -->
+        <div class="hud">
+            <div class="hud-top">
+                <div class="hud-left-status">
+                    <div class="chakra-indicator" id="left-chakra">
+                        <div class="chakra-label">LEFT HAND</div>
+                        <div class="chakra-bar">
+                            <div class="chakra-fill chidori-fill" id="left-chakra-fill"></div>
+                        </div>
+                        <div class="jutsu-name" id="left-jutsu-name">CHIDORI</div>
+                    </div>
+                </div>
+                <div class="hud-center">
+                    <div class="fps-counter" id="fps-counter">0 FPS</div>
+                </div>
+                <div class="hud-right-status">
+                    <div class="chakra-indicator" id="right-chakra">
+                        <div class="chakra-label">RIGHT HAND</div>
+                        <div class="chakra-bar">
+                            <div class="chakra-fill rasengan-fill" id="right-chakra-fill"></div>
+                        </div>
+                        <div class="jutsu-name" id="right-jutsu-name">RASENGAN</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hand detection status -->
+        <div class="detection-status" id="detection-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Show your hands to activate jutsu</span>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="control-btn" id="toggle-skeleton" title="Toggle Hand Skeleton">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v6" />
+                    <path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8" />
+                    <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8V8a2 2 0 1 1 4 0" />
+                </svg>
+            </button>
+            <button class="control-btn" id="toggle-mirror" title="Toggle Mirror">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3v18M9 6l-6 6 6 6M15 6l6 6-6 6" />
+                </svg>
+            </button>
+            <button class="control-btn active" id="toggle-effects" title="Toggle Effects">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Footer Credit in AR View -->
+        <div class="ar-footer">
+            Made by <a href="https://github.com/JayantVerma01" target="_blank" rel="noopener noreferrer">Jayant Verma</a>
+        </div>
+    </div>
+
+    <!-- MediaPipe Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <!-- App Scripts -->
+    <script src="particles.js"></script>
+    <script src="rasengan.js"></script>
+    <script src="chidori.js"></script>
+    <script src="projectiles.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
