@@ -1,8 +1,5 @@
 # Naruto Jutsu AR — Technical Documentation
 
-This document provides a comprehensive overview of the architecture, libraries, rendering pipeline, gesture detection, and custom physics system built for the **Naruto Jutsu AR** web application.
-
----
 
 ## 1. Overview & Core Features
 **Naruto Jutsu AR** is a real-time, camera-driven Augmented Reality (AR) web application that tracks a user's hand movements and patterns to render procedural visual effects:
